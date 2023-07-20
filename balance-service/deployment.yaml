@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: balance-deployment
+  namespace: global-dynamic
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # how many pods we can add at a time
+      maxUnavailable: 1  # maxUnavailable define how many pods can be unavailable during the rolling update
+  selector:
+    matchLabels:
+      balance-service: app
+  template:
+    metadata:
+      labels:
+        balance-service: app
+    spec:
+      containers:
+        - image: ganiipek/global-dynamic-balance-service:latest
+          name: balance-dp
+          imagePullPolicy: Always
+          env: 
+          - name: SECRET_DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mysql-root
+                key: rootHost
+          - name: SECRET_DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mysql-root
+                key: rootUser
+          - name: SECRET_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mysql-root
+                key: rootPassword
+          - name: SECRET_DB_SECURE_CONNECTION
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mysql-root
+                key: secureConnection
+          
+      imagePullSecrets:
+        - name: regcred

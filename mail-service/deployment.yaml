@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mail-deployment
+  namespace: global-dynamic
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # how many pods we can add at a time
+      maxUnavailable: 0  # maxUnavailable define how many pods can be unavailable during the rolling update
+  selector:
+    matchLabels:
+      mail-service: app
+  template:
+    metadata:
+      labels:
+        mail-service: app
+    spec:
+      containers:
+        - image: ganiipek/global-dynamic-mail-service:latest
+          name: mail-dp
+          imagePullPolicy: Always
+          env: 
+          - name: SECRET_RABBITMQ_HOST
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: host
+          - name: SECRET_RABBITMQ_PORT
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: port
+          - name: SECRET_RABBITMQ_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: username
+          - name: SECRET_RABBITMQ_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: password
+          - name: SECRET_MAIL_HOST
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mail-noreply
+                key: host
+          - name: SECRET_MAIL_PORT
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mail-noreply
+                key: port
+          - name: SECRET_MAIL_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mail-noreply
+                key: username
+          - name: SECRET_MAIL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mail-noreply
+                key: password
+          - name: SECRET_MAIL_SECURE
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mail-noreply
+                key: secure
+          - name: SECRET_MAIL_REQUIRE_TLS
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mail-noreply
+                key: require_tls
+                
+      imagePullSecrets:
+        - name: regcred

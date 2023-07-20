@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mt5-deployment
+  namespace: global-dynamic
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # how many pods we can add at a time
+      maxUnavailable: 0  # maxUnavailable define how many pods can be unavailable during the rolling update
+  selector:
+    matchLabels:
+      mt5-deployment: app
+  template:
+    metadata:
+      labels:
+        mt5-deployment: app
+    spec:
+      containers:
+        - image: ganiipek/global-dynamic-metatrader5-service:latest
+          name: mt5-dp
+          ports:
+            - containerPort: 8030
+              name: mt5-dp
+          imagePullPolicy: Always
+          env: 
+          - name: SECRET_MT5_HOST
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-metatrader5-server
+                key: host
+          - name: SECRET_MT5_PORT
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-metatrader5-server
+                key: port
+          - name: SECRET_MT5_LOGIN
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-metatrader5-server
+                key: login
+          - name: SECRET_MT5_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-metatrader5-server
+                key: password
+          - name: SECRET_MT5_BUILD
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-metatrader5-server
+                key: build
+      imagePullSecrets:
+        - name: regcred

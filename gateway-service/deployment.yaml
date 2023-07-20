@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-deployment
+  namespace: global-dynamic
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # how many pods we can add at a time
+      maxUnavailable: 0  # maxUnavailable define how many pods can be unavailable during the rolling update
+  selector:
+    matchLabels:
+      gateway-service: app
+  template:
+    metadata:
+      labels:
+        gateway-service: app
+    spec:
+      containers:
+        - name: gateway-dp
+          image: ganiipek/global-dynamic-gateway-service:latest
+          ports:
+            - containerPort: 8443
+              name: gateway-dp
+          imagePullPolicy: Always
+          env: 
+          - name: SECRET_WEBSITE_SERVICE_HOST
+            value: "website-service.global-dynamic.svc.cluster.local"
+          - name: SECRET_WEBSITE_SERVICE_PORT
+            value: "8010"
+          - name: SECRET_RABBITMQ_MANAGEMENT_HOST
+            value: "rabbitmqcluster.default.svc.cluster.local"
+          - name: SECRET_RABBITMQ_MANAGEMENT_PORT
+            value: "15672"
+          - name: SECRET_RABBITMQ_AMQP_HOST
+            value: "rabbitmqcluster.default.svc.cluster.local"
+          - name: SECRET_RABBITMQ_AMQP_PORT
+            value: "5672"
+      imagePullSecrets:
+        - name: regcred
+

@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website-deployment
+  namespace: global-dynamic
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # how many pods we can add at a time
+      maxUnavailable: 1  # maxUnavailable define how many pods can be unavailable during the rolling update
+  selector:
+    matchLabels:
+      website-deployment: app
+  template:
+    metadata:
+      labels:
+        website-deployment: app
+    spec:
+      containers:
+        - image: ganiipek/global-dynamic-website-service:latest
+          name: website-dp
+          ports:
+            - containerPort: 8010
+              name: website-dp
+          imagePullPolicy: Always
+          env: 
+          - name: SECRET_DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mysql-root
+                key: rootHost
+          - name: SECRET_DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mysql-root
+                key: rootUser
+          - name: SECRET_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mysql-root
+                key: rootPassword
+          - name: SECRET_DB_SECURE_CONNECTION
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mysql-root
+                key: secureConnection
+          - name: SECRET_RABBITMQ_HOST
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: host
+          - name: SECRET_RABBITMQ_PORT
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: port
+          - name: SECRET_RABBITMQ_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: username
+          - name: SECRET_RABBITMQ_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: password
+          - name: SECRET_SUMSUB_APP_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-sumsub
+                key: app_token
+          - name: SECRET_SUMSUB_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-sumsub
+                key: secret_key
+          - name: SECRET_SUMSUB_WEBHOOK_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-sumsub
+                key: webhook_secret_key
+          - name: SECRET_METATRADER_SERVICE_HOST
+            value: "mt5-service.global-dynamic.svc.cluster.local"
+          - name: SECRET_METATRADER_SERVICE_PORT
+            value: "8030"
+          - name: SECRET_BALANCE_SERVICE_HOST
+            value: "balance-service.global-dynamic.svc.cluster.local"
+          - name: SECRET_BALANCE_SERVICE_PORT
+            value: "8040"
+          - name: SECRET_TRANSFER_SERVICE_HOST
+            value: "transfer-service.global-dynamic.svc.cluster.local"
+          - name: SECRET_TRANSFER_SERVICE_PORT
+            value: "8050"
+          - name: SECRET_PARTNERSHIP_SERVICE_HOST
+            value: "partnership-service.global-dynamic.svc.cluster.local"
+          - name: SECRET_PARTNERSHIP_SERVICE_PORT
+            value: "8060"
+          - name: SECRET_RECAPTCHA_SECRET_KEY
+            value: "6Ld1tGUkAAAAAJk5Ft_SdwowY2PAuNRRzB0hXHo-"
+      imagePullSecrets:
+        - name: regcred

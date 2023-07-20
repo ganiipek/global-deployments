@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transfer-deployment
+  namespace: global-dynamic
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # how many pods we can add at a time
+      maxUnavailable: 0  # maxUnavailable define how many pods can be unavailable during the rolling update
+  selector:
+    matchLabels:
+      transfer-deployment: app
+  template:
+    metadata:
+      labels:
+        transfer-deployment: app
+    spec:
+      containers:
+        - image: ganiipek/global-dynamic-transfer-service:latest
+          name: transfer-dp
+          ports:
+            - containerPort: 8010
+              name: transfer-dp
+          imagePullPolicy: Always
+          env: 
+          - name: SECRET_DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mysql-root
+                key: rootHost
+          - name: SECRET_DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mysql-root
+                key: rootUser
+          - name: SECRET_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mysql-root
+                key: rootPassword
+          - name: SECRET_DB_SECURE_CONNECTION
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mysql-root
+                key: secureConnection
+          - name: SECRET_RABBITMQ_HOST
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: host
+          - name: SECRET_RABBITMQ_PORT
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: port
+          - name: SECRET_RABBITMQ_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: username
+          - name: SECRET_RABBITMQ_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: password
+          - name: SECRET_METATRADER_SERVICE_HOST
+            value: "mt5-service.global-dynamic.svc.cluster.local"
+          - name: SECRET_METATRADER_SERVICE_PORT
+            value: "8030"
+          - name: SECRET_BALANCE_SERVICE_HOST
+            value: "balance-service.global-dynamic.svc.cluster.local"
+          - name: SECRET_BALANCE_SERVICE_PORT
+            value: "8040"
+          - name: SECRET_PARTNERSHIP_SERVICE_HOST
+            value: "partnership-service.global-dynamic.svc.cluster.local"
+          - name: SECRET_PARTNERSHIP_SERVICE_PORT
+            value: "8060"
+            
+      imagePullSecrets:
+        - name: regcred
