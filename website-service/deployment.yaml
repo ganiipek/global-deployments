@@ -80,7 +80,12 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: global-dynamic-sumsub
-                key: webhook_secret_key
+                key: webhook_secret_key          
+          - name: SECRET_SUMSUB_LEVEL
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-sumsub
+                key: level
           - name: SECRET_METATRADER_SERVICE_HOST
             value: "mt5-service.global-dynamic.svc.cluster.local"
           - name: SECRET_METATRADER_SERVICE_PORT
