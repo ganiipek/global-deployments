@@ -66,6 +66,11 @@ spec:
               secretKeyRef:
                 name: global-dynamic-rabbitmq
                 key: password
+          - name: SECRET_RABBITMQ_VHOST
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: vhost
           - name: SECRET_METATRADER_SERVICE_HOST
             value: "mt5-service.global-dynamic.svc.cluster.local"
           - name: SECRET_METATRADER_SERVICE_PORT

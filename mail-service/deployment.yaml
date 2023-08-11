@@ -43,6 +43,11 @@ spec:
               secretKeyRef:
                 name: global-dynamic-rabbitmq
                 key: password
+          - name: SECRET_RABBITMQ_VHOST
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: vhost
           - name: SECRET_MAIL_HOST
             valueFrom:
               secretKeyRef:

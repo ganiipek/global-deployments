@@ -43,6 +43,31 @@ spec:
               secretKeyRef:
                 name: global-dynamic-mysql-root
                 key: secureConnection
+          - name: SECRET_RABBITMQ_HOST
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: host
+          - name: SECRET_RABBITMQ_PORT
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: port
+          - name: SECRET_RABBITMQ_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: username
+          - name: SECRET_RABBITMQ_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: password
+          - name: SECRET_RABBITMQ_VHOST
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-rabbitmq
+                key: vhost
           
       imagePullSecrets:
         - name: regcred
