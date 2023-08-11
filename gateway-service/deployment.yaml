@@ -30,14 +30,6 @@ spec:
             value: "website-service.global-dynamic.svc.cluster.local"
           - name: SECRET_WEBSITE_SERVICE_PORT
             value: "8010"
-          - name: SECRET_RABBITMQ_MANAGEMENT_HOST
-            value: "rabbitmqcluster.default.svc.cluster.local"
-          - name: SECRET_RABBITMQ_MANAGEMENT_PORT
-            value: "15672"
-          - name: SECRET_RABBITMQ_AMQP_HOST
-            value: "rabbitmqcluster.default.svc.cluster.local"
-          - name: SECRET_RABBITMQ_AMQP_PORT
-            value: "5672"
       imagePullSecrets:
         - name: regcred
 
