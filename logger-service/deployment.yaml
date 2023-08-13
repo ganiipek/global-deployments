@@ -43,6 +43,11 @@ spec:
               secretKeyRef:
                 name: global-dynamic-mongodb
                 key: password
+          - name: SECRET_DB_VHOST
+            valueFrom:
+              secretKeyRef:
+                name: global-dynamic-mongodb
+                key: vhost
           - name: SECRET_RABBITMQ_HOST
             valueFrom:
               secretKeyRef:
