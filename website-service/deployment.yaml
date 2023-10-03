@@ -103,10 +103,10 @@ spec:
             value: "transfer-service.global-dynamic.svc.cluster.local"
           - name: SECRET_TRANSFER_SERVICE_PORT
             value: "8050"
-          - name: SECRET_PARTNERSHIP_SERVICE_HOST
-            value: "partnership-service.global-dynamic.svc.cluster.local"
-          - name: SECRET_PARTNERSHIP_SERVICE_PORT
-            value: "8060"
+          - name: SECRET_LOGGER_SERVICE_HOST
+            value: "logger-service.global-dynamic.svc.cluster.local"
+          - name: SECRET_LOGGER_SERVICE_PORT
+            value: "8070"
           - name: SECRET_RECAPTCHA_SECRET_KEY
             value: "6Ld1tGUkAAAAAJk5Ft_SdwowY2PAuNRRzB0hXHo-"
       imagePullSecrets:
